@@ -10,44 +10,40 @@ deverá imprimir o nome do titular e o saldo final da conta*/
 #include <stdio.h>
 #include <stdlib.h>
 #define MAX 100
-#define TRES 1
+#define TRES 3
 
-typedef struct tConta
+struct tConta
 {
     char nome[MAX];
     int cpf;
     float saldo;
+};
 
-}novaConta;
-
-void criar_conta(novaConta conta[])
+void criar_conta(tConta conta[])
 {
     struct tConta *p;
     for (p = conta; p < conta + TRES; p++)
     {
         printf("NOME: ");
-        scanf("%[^\n]", p->nome);
-        getchar();
+        scanf(" %[^\n]", p->nome);
 
         printf("CPF: ");
         scanf("%d", &p->cpf);
-        getchar();
 
         printf("SALDO INICIAL:");
         scanf("%f", &p->saldo);
-        getchar();
     }
 }
 
-
-void imprime(novaConta conta[])
+void imprime(tConta conta[])
 {
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < TRES; i++)
     {
         printf("O saldo de %s eh: %.2f\n", conta[i].nome, conta[i].saldo);
     }
 }
-void deposito(novaConta conta[], int cpf)
+
+void deposito(tConta conta[], int cpf)
 {
     struct tConta *p;
     float soma;
@@ -71,44 +67,36 @@ void deposito(novaConta conta[], int cpf)
     }
 }
 
-void saque(novaConta conta[])
+void saque(tConta conta[], int cpf)
 {
+    struct tConta *p;
     float retira;
-    int n;
-    printf("Escolha uma conta para fazer o saque: ");
-    scanf("%d", &n);
-    for (int i = 0; i < 1; i++)
+    int aux = 0;
+    for (p = conta; p < conta + TRES; p++)
     {
-        if (n == 1)
+        if (cpf == p->cpf)
         {
-            printf("Faça o deposito: R$");
+            printf("Retire um saldo: ");
             scanf("%f", &retira);
-            conta[i].saldo = conta[i].saldo - retira;
+            getchar();
+            p->saldo += retira;
+            aux = 1;
+            imprime(conta);
+            
             break;
         }
-        else if (n == 2)
+        if (aux == 0)
         {
-            printf("Faça o deposito: R$");
-            scanf("%f", &retira);
-            conta[i].saldo = conta[i].saldo - retira;
-            break;
-        }
-        else if (n == 3)
-        {
-            printf("Faça o deposito: R$");
-            scanf("%f", &retira);
-            conta[i].saldo = conta[i].saldo - retira;
-
-            break;
+            printf("CPF NAO ENCONTRADO\n");
         }
     }
-    printf("Insira um valor valido\n");
 }
 
 int main()
 {
-    novaConta conta[MAX];
+    tConta conta[MAX];
     int numero;
+    int cpf;
     do
     {
         printf("1 - Criar conta\n");
@@ -127,17 +115,16 @@ int main()
             break;
 
         case 2:
-            int cpf;
             printf("INFORME O CPF: ");
             scanf("%d", &cpf);
-
             deposito(conta, cpf);
 
             break;
 
         case 3:
-            saque(conta);
-            imprime(conta);
+            printf("INFORME O CPF: ");
+            scanf("%d", &cpf);
+            saque(conta, cpf);
 
             break;
 
